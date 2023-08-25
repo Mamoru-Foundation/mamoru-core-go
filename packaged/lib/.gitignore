@@ -1,0 +1,2 @@
+# Do not commit binaries unless explicitly forced to
+*/libmamoru_core_go.a

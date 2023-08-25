@@ -1,0 +1,124 @@
+name: "Release"
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The release tag. Must follow Go versioning conventions, e.g. "v0.0.0"'
+        required: true
+
+env:
+  RELEASE_BRANCH_NAME: release/${{ inputs.tag }}
+
+jobs:
+  prepare-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate inputs
+        run: |
+          if [[ "${{ inputs.tag }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "OK";
+          else
+            echo "Invalid tag format. Given: ${{ inputs.tag }}";
+            exit 1;
+          fi
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/init-git-user
+
+      - name: Create the release branch
+        run: |
+          git checkout -b ${{ env.RELEASE_BRANCH_NAME }}
+          git push --set-upstream origin ${{ env.RELEASE_BRANCH_NAME }}
+
+  build:
+    needs: prepare-branch
+    strategy:
+      matrix:
+        include:
+          - runner: self-hosted
+            platform: linux
+          - runner: macos-13-xl
+            platform: darwin-aarch64
+          - runner: macos-13-xl
+            platform: darwin
+    runs-on: ${{ matrix.runner }}
+    env:
+      CARGO_NET_GIT_FETCH_WITH_CLI: true
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.RELEASE_BRANCH_NAME }}
+
+      - uses: ./.github/actions/init-git-user
+
+      - uses: webfactory/ssh-agent@v0.6.0
+        with:
+          ssh-private-key: |
+            ${{ secrets.VALIDATION_CHAIN_KEY }}
+            ${{ secrets.MAMORU_CORE_KEY }}
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          override: true
+          target: ${{ matrix.platform == 'darwin-aarch64' && 'aarch64-apple-darwin' || '' }}
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+
+      - if: matrix.platform == 'linux'
+        name: Build the binary
+        run: |
+          make build-rust-release
+          git add -f ./packaged/lib/linux-amd64/libmamoru_core_go.a
+          git commit -m "Add 'linux-amd64' binary"
+
+      - if: matrix.platform == 'darwin'
+        name: Build the binary
+        run: |
+          make build-rust-release
+          git add -f ./packaged/lib/darwin-amd64/libmamoru_core_go.a
+          git commit -m "Add 'darwin-amd64' binary"
+
+      - if: matrix.platform == 'darwin-aarch64'
+        name: Build the binary
+        run: |
+          make build-rust-release-macos-aarch64
+          git add -f ./packaged/lib/darwin-arm64/libmamoru_core_go.a
+          git commit -m "Add 'darwin-arm64' binary"
+
+      - if: matrix.platform == 'linux' || matrix.platform == 'darwin'
+        name: Run tests
+        run: |
+          make test
+          make bench
+
+      - name: Push the binary
+        run: |
+          # Try push 5 times due to possible conflicts from other build jobs
+          for i in {1..5}; do
+            git pull --rebase && git push && break || sleep 5;
+          done
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.RELEASE_BRANCH_NAME }}
+
+      - uses: ./.github/actions/init-git-user
+
+      - name: Create the release tag
+        run: |
+          git tag -a ${{ inputs.tag }} -m "Release ${{ inputs.tag }}"
+          git push origin ${{ inputs.tag }}
+
+      - name: Cache package in GOPROXY
+        run: |
+          GOPROXY=proxy.golang.org go list -m github.com/${{ github.repository }}@${{ inputs.tag }}

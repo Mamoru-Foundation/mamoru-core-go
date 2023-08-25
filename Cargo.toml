@@ -1,0 +1,20 @@
+[package]
+name = "mamoru-core-go"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["staticlib"]
+
+[profile.release]
+# optimize for binary size
+opt-level = "z"
+strip = true
+lto = true
+
+[dependencies]
+query-validator-c = {git = "https://github.com/Mamoru-Foundation/mamoru-core", rev = "5b868778f0b443488b355c9886710f3c3e14f184"}
+playbook-engine-c = {git = "https://github.com/Mamoru-Foundation/mamoru-core", rev = "5b868778f0b443488b355c9886710f3c3e14f184"}
+
+#query-validator-c = {path = "../mamoru-core/query-validator-c"}
+#playbook-engine-c = {path = "../mamoru-core/playbook-engine-c"}

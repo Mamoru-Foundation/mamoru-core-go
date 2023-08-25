@@ -1,0 +1,46 @@
+name: "Lint and test"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  CARGO_NET_GIT_FETCH_WITH_CLI: true
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  lint_test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: webfactory/ssh-agent@v0.6.0
+      with:
+        ssh-private-key: |
+          ${{ secrets.VALIDATION_CHAIN_KEY }}
+          ${{ secrets.MAMORU_CORE_KEY }}
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.19
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        override: true
+
+    - uses: Swatinem/rust-cache@v2
+
+    - name: Verify dependencies
+      run: go mod verify
+
+    - name: Build a single binary for tests
+      run: make build-rust
+
+    - name: Run tests
+      run: make test
