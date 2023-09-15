@@ -75,7 +75,6 @@ func TestPlaybook(t *testing.T) {
 	now, err := time.Parse(time.RFC3339, "2021-01-01T00:00:00Z")
 	assert.NoError(t, err)
 
-	runId := playbook_engine.RunId("hello")
 	trigger := playbook_engine.Trigger{
 		Severity:   playbook_engine.SeverityAlert,
 		IncidentId: "hello",
@@ -98,7 +97,7 @@ func TestPlaybook(t *testing.T) {
 		}),
 	}
 
-	result, err := playbook_engine.Start(now, runId, playbook, trigger)
+	result, err := playbook_engine.Start(now, playbook, trigger)
 
 	assert.NoError(t, err)
 
@@ -132,7 +131,7 @@ func TestPlaybook(t *testing.T) {
 		},
 	}
 
-	result, err = playbook_engine.Resume(now, runId, confirmations)
+	result, err = playbook_engine.Resume(now, playbook, trigger, result.Run, confirmations)
 
 	assert.NoError(t, err)
 	assert.Equal(t, result.ExternalActions, []playbook_engine.ExternalAction{})

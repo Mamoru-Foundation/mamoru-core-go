@@ -43,7 +43,9 @@ ffi_drop_json_result (
 FfiJsonResult_t
 ffi_playbook_resume (
     char const * datetime,
-    char const * run_id,
+    char const * playbook_json,
+    char const * trigger_json,
+    char const * run_json,
     char const * confirmations_json);
 
 /** \brief
@@ -54,7 +56,6 @@ ffi_playbook_resume (
 FfiJsonResult_t
 ffi_playbook_start (
     char const * datetime,
-    char const * run_id,
     char const * playbook_json,
     char const * trigger_json);
 

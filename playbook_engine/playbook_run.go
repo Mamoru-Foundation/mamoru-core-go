@@ -22,6 +22,15 @@ type PlaybookRun struct {
 	Steps  []StepRun         `json:"steps"`
 }
 
+func (r PlaybookRun) ToJson() (string, error) {
+	marshal, err := json.Marshal(r)
+	if err != nil {
+		return "", err
+	}
+
+	return string(marshal), nil
+}
+
 type StepRun struct {
 	StepSeq   uint32        `json:"stepSeq"`
 	StartedAt *time.Time    `json:"startedAt,omitempty"`
@@ -44,6 +53,46 @@ type StepRunStatus struct {
 	runningData *StepRunRunningData
 	successData *StepRunSuccessData
 	failedData  *StepRunFailedData
+}
+
+func NewStepRunStatusPending() StepRunStatus {
+	return StepRunStatus{
+		status: StepRunStatusPending,
+	}
+}
+
+func NewStepRunStatusSkipped() StepRunStatus {
+	return StepRunStatus{
+		status: StepRunStatusSkipped,
+	}
+}
+
+func NewStepRunStatusRunning(waitingForConfirmation bool) StepRunStatus {
+	return StepRunStatus{
+		status: StepRunStatusRunning,
+		runningData: &StepRunRunningData{
+			WaitingForConfirmation: waitingForConfirmation,
+		},
+	}
+}
+
+func NewStepRunStatusSuccess(finishedAt time.Time, outputs []StepOutput) StepRunStatus {
+	return StepRunStatus{
+		status: StepRunStatusSuccess,
+		successData: &StepRunSuccessData{
+			FinishedAt: finishedAt,
+			Outputs:    outputs,
+		},
+	}
+}
+
+func NewStepRunStatusFailed(failedAt time.Time) StepRunStatus {
+	return StepRunStatus{
+		status: StepRunStatusFailed,
+		failedData: &StepRunFailedData{
+			FailedAt: failedAt,
+		},
+	}
 }
 
 func (s *StepRunStatus) IsPending() bool {
@@ -143,6 +192,30 @@ func (s *StepRunStatus) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (s *StepRunStatus) MarshalJSON() ([]byte, error) {
+	var temp struct {
+		Type    StepRunStatusEnum `json:"type"`
+		Content interface{}       `json:"content,omitempty"`
+	}
+
+	temp.Type = s.status
+
+	switch s.status {
+	case StepRunStatusPending, StepRunStatusSkipped:
+		// No extra content to marshal for these cases
+	case StepRunStatusRunning:
+		temp.Content = s.runningData
+	case StepRunStatusSuccess:
+		temp.Content = s.successData
+	case StepRunStatusFailed:
+		temp.Content = s.failedData
+	default:
+		return nil, fmt.Errorf("unknown status: %s", s.status)
+	}
+
+	return json.Marshal(temp)
+}
+
 type StepRunRunningData struct {
 	WaitingForConfirmation bool `json:"waitingForConfirmation"`
 }
@@ -153,7 +226,7 @@ type StepRunSuccessData struct {
 }
 
 type StepRunFailedData struct {
-	FailedAt time.Time `json:"finishedAt"`
+	FailedAt time.Time `json:"failedAt"`
 }
 
 type PlaybookRunStatusEnum string
@@ -178,6 +251,32 @@ type PlaybookRunStatus struct {
 	status      PlaybookRunStatusEnum
 	successData *PlaybookRunSuccessData
 	failedData  *PlaybookRunFailedData
+}
+
+func NewPlaybookRunStatusRunning() PlaybookRunStatus {
+	return PlaybookRunStatus{
+		status: PlaybookRunStatusRunning,
+	}
+}
+
+func NewPlaybookRunStatusSuccess(finishedAt time.Time) PlaybookRunStatus {
+	return PlaybookRunStatus{
+		status: PlaybookRunStatusSuccess,
+		successData: &PlaybookRunSuccessData{
+			FinishedAt: finishedAt,
+		},
+	}
+}
+
+func NewPlaybookRunStatusFailed(finishedAt time.Time, stepSeq uint32, message string) PlaybookRunStatus {
+	return PlaybookRunStatus{
+		status: PlaybookRunStatusFailed,
+		failedData: &PlaybookRunFailedData{
+			FinishedAt: finishedAt,
+			StepSeq:    stepSeq,
+			Message:    message,
+		},
+	}
 }
 
 type StepParam struct {
@@ -245,4 +344,26 @@ func (prs *PlaybookRunStatus) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
+}
+
+func (prs PlaybookRunStatus) MarshalJSON() ([]byte, error) {
+	var temp struct {
+		Type    string      `json:"type"`
+		Content interface{} `json:"content,omitempty"`
+	}
+
+	switch prs.status {
+	case PlaybookRunStatusSuccess:
+		temp.Type = string(PlaybookRunStatusSuccess)
+		temp.Content = prs.successData
+	case PlaybookRunStatusFailed:
+		temp.Type = string(PlaybookRunStatusFailed)
+		temp.Content = prs.failedData
+	case PlaybookRunStatusRunning:
+		temp.Type = string(PlaybookRunStatusRunning)
+	default:
+		return nil, fmt.Errorf("unknown status: %s", prs.status)
+	}
+
+	return json.Marshal(temp)
 }

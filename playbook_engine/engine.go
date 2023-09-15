@@ -11,9 +11,8 @@ import (
 	"unsafe"
 )
 
-func Start(now time.Time, runId RunId, playbook Playbook, trigger Trigger) (*EngineResponse, error) {
+func Start(now time.Time, playbook Playbook, trigger Trigger) (*EngineResponse, error) {
 	nowRfc3339 := formatTime(now)
-	runIdString := string(runId)
 
 	triggerJson, err := trigger.ToJson()
 	if err != nil {
@@ -25,7 +24,7 @@ func Start(now time.Time, runId RunId, playbook Playbook, trigger Trigger) (*Eng
 		return nil, err
 	}
 
-	result := generated_bindings.FfiPlaybookStart(nowRfc3339, runIdString, playbookJson, triggerJson)
+	result := generated_bindings.FfiPlaybookStart(nowRfc3339, playbookJson, triggerJson)
 	resultJson, err := unwrapError(result)
 	if err != nil {
 		return nil, err
@@ -40,16 +39,30 @@ func Start(now time.Time, runId RunId, playbook Playbook, trigger Trigger) (*Eng
 	return &response, nil
 }
 
-func Resume(now time.Time, runId RunId, confirmations RunConfirmations) (*EngineResponse, error) {
+func Resume(now time.Time, playbook Playbook, trigger Trigger, run PlaybookRun, confirmations RunConfirmations) (*EngineResponse, error) {
 	nowRfc3339 := formatTime(now)
-	runIdString := string(runId)
-	confirmationsJson, err := confirmations.ToJson()
 
+	playbookJson, err := playbook.ToJson()
 	if err != nil {
 		return nil, err
 	}
 
-	result := generated_bindings.FfiPlaybookResume(nowRfc3339, runIdString, confirmationsJson)
+	triggerJson, err := trigger.ToJson()
+	if err != nil {
+		return nil, err
+	}
+
+	runJson, err := run.ToJson()
+	if err != nil {
+		return nil, err
+	}
+
+	confirmationsJson, err := confirmations.ToJson()
+	if err != nil {
+		return nil, err
+	}
+
+	result := generated_bindings.FfiPlaybookResume(nowRfc3339, playbookJson, triggerJson, runJson, confirmationsJson)
 
 	resultJson, err := unwrapError(result)
 	if err != nil {

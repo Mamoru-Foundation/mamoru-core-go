@@ -58,3 +58,30 @@ func TestRunConfirmations_ToJson(t *testing.T) {
 
 	assert.Equal(t, `[{"logs":["hello"],"status":{"content":{"outputs":[{"name":"hello","value":"world"}]},"type":"success"},"stepSeq":1},{"logs":["hello"],"status":{"type":"failed"},"stepSeq":2}]`, json)
 }
+
+func TestPlaybookRun_ToJson(t *testing.T) {
+	now, _ := time.Parse(time.RFC3339, "2021-01-01T00:00:00Z")
+
+	run := PlaybookRun{
+		Status: NewPlaybookRunStatusFailed(now, 1, "hello"),
+		Steps: []StepRun{
+			{
+				StepSeq:   0,
+				StartedAt: &now,
+				Status:    NewStepRunStatusFailed(now),
+				Logs:      nil,
+			},
+			{
+				StepSeq:   1,
+				StartedAt: nil,
+				Status:    NewStepRunStatusPending(),
+				Logs:      []string{"hello"},
+			},
+		},
+	}
+
+	json, err := run.ToJson()
+	assert.NoError(t, err)
+
+	assert.Equal(t, `{"status":{"type":"failed","content":{"finishedAt":"2021-01-01T00:00:00Z","stepSeq":1,"message":"hello"}},"steps":[{"stepSeq":0,"startedAt":"2021-01-01T00:00:00Z","status":{"type":"failed","content":{"failedAt":"2021-01-01T00:00:00Z"}},"logs":null},{"stepSeq":1,"status":{"type":"pending"},"logs":["hello"]}]}`, json)
+}
