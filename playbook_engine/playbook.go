@@ -5,8 +5,6 @@ import (
 	"time"
 )
 
-type RunId string
-
 type Severity string
 
 const (
