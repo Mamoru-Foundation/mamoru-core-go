@@ -13,8 +13,8 @@ strip = true
 lto = true
 
 [dependencies]
-query-validator-c = {git = "https://github.com/Mamoru-Foundation/mamoru-core", rev = "acdf6c892724d6a58719c07cbc0b080b4aa5a5ea"}
-playbook-engine-c = {git = "https://github.com/Mamoru-Foundation/mamoru-core", rev = "acdf6c892724d6a58719c07cbc0b080b4aa5a5ea"}
+query-validator-c = {git = "https://github.com/Mamoru-Foundation/mamoru-core", rev = "a1bf0a4eb6a21224d8693a8045b0f11f0527212b"}
+playbook-engine-c = {git = "https://github.com/Mamoru-Foundation/mamoru-core", rev = "a1bf0a4eb6a21224d8693a8045b0f11f0527212b"}
 
-#query-validator-c = {path = "../mamoru-core/query-validator-c"}
-#playbook-engine-c = {path = "../mamoru-core/playbook-engine-c"}
+# query-validator-c = {path = "../mamoru-core/query-validator-c"}
+# playbook-engine-c = {path = "../mamoru-core/playbook-engine-c"}
