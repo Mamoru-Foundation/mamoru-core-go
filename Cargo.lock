@@ -66,6 +66,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "allocator-api2"
+version = "0.2.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0942ffc6dcaadf03badf6e6a2d0228460359d5e34b57ccdc720b7382dfbd5ec5"
+
+[[package]]
 name = "android-tzdata"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -414,7 +420,7 @@ dependencies = [
 [[package]]
 name = "blockchain-data-derive"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "darling 0.14.4",
  "maplit",
@@ -427,7 +433,7 @@ dependencies = [
 [[package]]
 name = "blockchain-data-macro"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "blockchain-data-derive",
  "paste",
@@ -1264,6 +1270,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4443176a9f2c162692bd3d352d745ef9413eec5782a80d8fd6f8a1ac692a07f7"
 
 [[package]]
+name = "fallible-iterator"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2acce4a10f12dc2fb14a218589d4f1f62ef011b2d0cc4b3cb1bba8e94da14649"
+
+[[package]]
+name = "fallible-streaming-iterator"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
+
+[[package]]
 name = "fastrand"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1453,7 +1471,7 @@ version = "0.26.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22030e2c5a68ec659fde1e949a745124b48e6fa8b045b7ed5bd1fe4ccc5c4e5d"
 dependencies = [
- "fallible-iterator",
+ "fallible-iterator 0.2.0",
  "indexmap 1.9.3",
  "stable_deref_trait",
 ]
@@ -1537,6 +1555,19 @@ name = "hashbrown"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2c6201b9ff9fd90a5a3bac2e56a830d0caa509576f0e503818ee82c181b3437a"
+dependencies = [
+ "ahash 0.8.3",
+ "allocator-api2",
+]
+
+[[package]]
+name = "hashlink"
+version = "0.8.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8094feaf31ff591f651a2664fb9cfd92bba7a60ce3197265e9482ebe753c8f7"
+dependencies = [
+ "hashbrown 0.14.0",
+]
 
 [[package]]
 name = "heck"
@@ -1879,6 +1910,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7012b1bbb0719e1097c47611d3898568c546d597c2e74d66f6087edd5233ff4"
 
 [[package]]
+name = "libsqlite3-sys"
+version = "0.27.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cf4e226dcd58b4be396f7bd3c20da8fdee2911400705297ba7d2d7cc2c30f716"
+dependencies = [
+ "cc",
+ "pkg-config",
+ "vcpkg",
+]
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1948,7 +1990,7 @@ checksum = "58093314a45e00c77d5c508f76e77c3396afbbc0d01506e7fae47b018bac2b1d"
 [[package]]
 name = "mamoru-aptos-types"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "blockchain-data-macro",
  "datafusion",
@@ -1960,7 +2002,7 @@ dependencies = [
 [[package]]
 name = "mamoru-core"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "as-ffi-bindings",
  "async-trait",
@@ -1975,6 +2017,7 @@ dependencies = [
  "lazy_static",
  "reqwest",
  "rmp-serde",
+ "rusqlite",
  "semver",
  "serde",
  "serde_json",
@@ -1994,9 +2037,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "mamoru-cosmos-types"
+version = "0.1.0"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
+dependencies = [
+ "blockchain-data-macro",
+ "datafusion",
+ "mamoru-core",
+ "maplit",
+ "serde",
+]
+
+[[package]]
 name = "mamoru-evm-types"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "blockchain-data-macro",
  "datafusion",
@@ -2008,7 +2063,7 @@ dependencies = [
 [[package]]
 name = "mamoru-sui-types"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "blockchain-data-macro",
  "datafusion",
@@ -2475,7 +2530,7 @@ checksum = "26072860ba924cbfa98ea39c8c19b4dd6a4a25423dbdf219c1eca91aa0cf6964"
 [[package]]
 name = "playbook-engine"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "chrono",
  "expect-test",
@@ -2491,7 +2546,7 @@ dependencies = [
 [[package]]
 name = "playbook-engine-c"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "chrono",
  "playbook-engine",
@@ -2602,12 +2657,13 @@ dependencies = [
 [[package]]
 name = "query-validator"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "chrono",
  "datafusion",
  "mamoru-aptos-types",
  "mamoru-core",
+ "mamoru-cosmos-types",
  "mamoru-evm-types",
  "mamoru-sui-types",
  "thiserror",
@@ -2616,7 +2672,7 @@ dependencies = [
 [[package]]
 name = "query-validator-c"
 version = "0.1.0"
-source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=716357e07d2e59e7fd133a155eeaa9e9e579c776#716357e07d2e59e7fd133a155eeaa9e9e579c776"
+source = "git+https://github.com/Mamoru-Foundation/mamoru-core?rev=a9c7c743c5b8939487354d824451999ed54924c7#a9c7c743c5b8939487354d824451999ed54924c7"
 dependencies = [
  "lazy_static",
  "query-validator",
@@ -2892,6 +2948,20 @@ dependencies = [
  "byteorder",
  "rmp",
  "serde",
+]
+
+[[package]]
+name = "rusqlite"
+version = "0.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a78046161564f5e7cd9008aff3b2990b3850dc8e0349119b98e8f251e099f24d"
+dependencies = [
+ "bitflags 2.4.0",
+ "fallible-iterator 0.3.0",
+ "fallible-streaming-iterator",
+ "hashlink",
+ "libsqlite3-sys",
+ "smallvec",
 ]
 
 [[package]]
@@ -3707,6 +3777,12 @@ checksum = "79daa5ed5740825c40b389c5e50312b9c86df53fccd33f281df655642b43869d"
 dependencies = [
  "getrandom",
 ]
+
+[[package]]
+name = "vcpkg"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 
 [[package]]
 name = "version_check"

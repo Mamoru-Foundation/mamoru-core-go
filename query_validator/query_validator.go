@@ -14,9 +14,10 @@ import (
 type Chain byte
 
 const (
-	ChainSui   Chain = generated_bindings.FfiChainTypeSui
-	ChainEvm   Chain = generated_bindings.FfiChainTypeEvm
-	ChainAptos Chain = generated_bindings.FfiChainTypeAptos
+	ChainSui    Chain = generated_bindings.FfiChainTypeSui
+	ChainEvm    Chain = generated_bindings.FfiChainTypeEvm
+	ChainAptos  Chain = generated_bindings.FfiChainTypeAptos
+	ChainCosmos Chain = generated_bindings.FfiChainTypeCosmos
 )
 
 func ValidateSql(chain Chain, query string, parameters map[string]string, versions map[string]string) error {
