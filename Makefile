@@ -22,10 +22,10 @@ build-rust-release-macos-aarch64:
 	cp target/aarch64-apple-darwin/release/$(LIB_NAME) ./packaged/lib/darwin-arm64/
 
 test:
-	GODEBUG=cgocheck=2 go test ./tests ./playbook_engine ./query_validator -v
+	GOEXPERIMENT=cgocheck2 go test ./tests ./playbook_engine ./query_validator -v
 
 bench:
-	GODEBUG=cgocheck=2 go test -bench=. ./tests
+	GOEXPERIMENT=cgocheck2 go test -bench=. ./tests
 
 clean:
 	cargo clean

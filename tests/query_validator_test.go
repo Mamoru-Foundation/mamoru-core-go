@@ -48,6 +48,18 @@ func TestValidateInvalidAptosExpression(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func TestValidateValidCosmosExpression(t *testing.T) {
+	err := query_validator.ValidateSql(query_validator.ChainCosmos, "SELECT * FROM blocks", nil, nil)
+
+	assert.Nil(t, err)
+}
+
+func TestValidateInvalidCosmosExpression(t *testing.T) {
+	err := query_validator.ValidateSql(query_validator.ChainCosmos, "SELECT * FROM dummy", nil, nil)
+
+	assert.NotNil(t, err)
+}
+
 func TestValidateSqlRendersOk(t *testing.T) {
 	err := query_validator.ValidateSqlRenders("SELECT * FROM blocks WHERE height = {{ height }}", map[string]string{
 		"height": "123",
