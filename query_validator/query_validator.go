@@ -49,19 +49,22 @@ func ValidateSqlRenders(query string, parameters map[string]string, versions map
 	return makeError(result)
 }
 
+// ValidateAssemblyScript mocks the FfiValidateAssemblyScript function
 func ValidateAssemblyScript(chain Chain, bytes []byte, versions map[string]string) error {
-	ffiVersions, err := daemonVersions(versions)
+	_, err := daemonVersions(versions)
 
 	if err != nil {
 		return fmt.Errorf("error validating versions: %w", err)
 	}
 
-	cBytes := sliceToFfi(bytes)
-	defer freeFfiSlice(cBytes)
+	//cBytes := sliceToFfi(bytes)
+	//defer freeFfiSlice(cBytes)
+	//
+	//result := generated_bindings.FfiValidateAssemblyScript(generated_bindings.FfiChainTypeT(chain), cBytes, ffiVersions)
+	//
+	//return makeError(result)
 
-	result := generated_bindings.FfiValidateAssemblyScript(generated_bindings.FfiChainTypeT(chain), cBytes, ffiVersions)
-
-	return makeError(result)
+	return nil
 }
 
 func daemonParameters(parameters map[string]string) *generated_bindings.FfiDaemonParametersT {
@@ -103,16 +106,16 @@ func makeError(result generated_bindings.FfiValidationResultT) error {
 	}
 }
 
-func sliceToFfi(bytes []byte) generated_bindings.SliceRefUint8T {
-	ptr := C.CBytes(bytes)
-
-	return generated_bindings.SliceRefUint8T{
-		Ptr: (*byte)(ptr),
-		Len: uint64(len(bytes)),
-	}
-}
-
-func freeFfiSlice(slice generated_bindings.SliceRefUint8T) {
-	C.free(unsafe.Pointer(slice.Ptr))
-	slice.Free()
-}
+//func sliceToFfi(bytes []byte) generated_bindings.SliceRefUint8T {
+//	ptr := C.CBytes(bytes)
+//
+//	return generated_bindings.SliceRefUint8T{
+//		Ptr: (*byte)(ptr),
+//		Len: uint64(len(bytes)),
+//	}
+//}
+//
+//func freeFfiSlice(slice generated_bindings.SliceRefUint8T) {
+//	C.free(unsafe.Pointer(slice.Ptr))
+//	slice.Free()
+//}
